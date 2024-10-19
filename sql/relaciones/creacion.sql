@@ -66,3 +66,29 @@ insert into clientes(cedula,nombre,apellido,edad)
 values('1909345333','Ana','Almeida',20);
 insert into clientes(cedula,nombre,apellido,edad)
 values('1909345889','Gustavo','Cerati',48);
+--productos
+create table ventas(
+	id_venta int,
+	codigo_producto int not null,
+	fecha_venta date not null,
+	cantidad int,
+	constraint id_venta_pk primary key(id_venta)
+)
+alter table ventas
+add constraint codigo_producto_fk
+foreign key(codigo_producto)
+references productos(codigo)
+--videojuegos
+create table plataformas(
+	id_plataforma int,
+	nombre_plataforma varchar(50) not null,
+	codigo_videojuego int,
+	constraint id_plataforma_pk primary key(id_plataforma)
+)
+alter table plataformas
+add constraint codigo_videojuego_fk
+foreign key(codigo_videojuego)
+references videojuegos(codigo)
+--estudiantes
+alter table estudiantes
+add column codigo_profesor int
