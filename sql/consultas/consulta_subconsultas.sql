@@ -24,3 +24,9 @@ and
 (com.cedula like '7%' or  clien.cedula like'%7' or clien.cedula like '%7%')
 and
 clien.nombre='Monica'
+--Estudiantes y profesores
+select estu.cedula, estu.nombre,estu.apellido,estu.email,estu.fecha_nacimiento,estu.codigo_profesor from
+estudiantes estu,profesores profe
+where profe.codigo=estu.codigo_profesor
+and (estu.apellido like '%n'or estu.apellido like 'N%'or estu.apellido like '%n%')
+and profe.nombre like'Francisco%'
