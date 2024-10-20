@@ -15,3 +15,12 @@ between money(100) and money(1000)
 and 
 cuen.fecha_creacion
 between '2022/09/21' and '2023/09/21'
+--Clientes y compras
+select clien.cedula,clien.nombre,clien.apellido,clien.edad from
+clientes clien,compras com
+where 
+clien.cedula=com.cedula
+and 
+(com.cedula like '7%' or  clien.cedula like'%7' or clien.cedula like '%7%')
+and
+clien.nombre='Monica'
