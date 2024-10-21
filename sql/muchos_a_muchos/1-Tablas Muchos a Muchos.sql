@@ -98,7 +98,7 @@ insert into ciudad values   (1,'Quito'),
 							(9,'Latacunga'),
 							(10,'Tena');
 
-
+delete from ciudad
 insert into municipio values (1,'GAD MUNICIPAL QUITO',1),
 							 (2,'GAD MUNICIPAL DE CUENCA',8),
 							 (3,'GAD MUNICIPALIDAD DE AMBATO',2),

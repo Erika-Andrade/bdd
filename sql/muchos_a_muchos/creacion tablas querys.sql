@@ -73,10 +73,120 @@ create table proyecto(
 )
 drop table proyecto_municipio
 create table proyecto_municipio(
-	municipio_id int not null,
 	proyecto_id int not null,
+	municipio_id int not null,
 	constraint municipio_id_fk foreign key(municipio_id) references municipio(id_muni),
 	constraint proyecto_id_fk foreign key(proyecto_id) references proyecto(id_proy),
 	constraint muni_proy_pk primary key(municipio_id,proyecto_id)
 )
---
+--*********************CONSULTAS Y SUBCONSULTAS
+select usu.nombre,gr.nombre from usuarios usu, grupo gr, usuario_grupo us_gr
+where usu.id_usu=us_gr.us_id 
+and gr_id=us_gr.gr_id
+
+select usu.nombre from usuarios usu, usuario_grupo us_gr
+where usu.id_usu=us_gr.us_id 
+and gr_id=us_gr.gr_id
+and us_gr.gr_id=1
+
+select gr.nombre,count(us_gr.us_id) from grupo gr,usuario_grupo us_gr
+where gr.id_gru=us_gr.gr_id
+group by gr.nombre
+--2
+select us.nombre,gr.nombre from usuarios us,grupo gr,usuario_grupo us_gr
+where us.id_usu=us_gr.us_id
+and gr.id_gru=us_gr.gr_id
+and gr.nombre like '%intensivo%'
+
+select usu.nombre,count(us_gr.us_id) from usuarios usu,usuario_grupo us_gr 
+where usu.id_usu=us_gr.us_id
+and us_gr.gr_id=2
+group by usu.nombre
+
+select gr.nombre,MAX(us_gr.us_id),MIN(us_gr.us_id) from grupo gr, usuario_grupo us_gr
+where gr.id_gru=us_gr.gr_id
+group by gr.nombre
+
+--3
+select usu.nombre,gr.fecha_creacion from usuarios usu, grupo gr,usuario_grupo us_gr
+where usu.id_usu=us_gr.us_id
+and gr.id_gru=us_gr.gr_id
+and gr.fecha_creacion between '2020/03/08' and '2023/03/08'
+
+select usu.nombre from usuarios usu, usuario_grupo us_gr
+where usu.id_usu=us_gr.us_id
+and us_gr.gr_id=3
+
+select gr.descripcion,count(us_gr.us_id) from grupo gr, usuario_grupo us_gr
+where gr.id_gru=us_gr.gr_id
+and gr.descripcion like '%matutino%'
+group by gr.descripcion
+--HUESPEDES Y HABITACIONES
+select habi.habitacion_numero,hues.nombres,hues.apellidos from habitaciones habi,huespedes hues, reservas reser
+where habi.habitacion_numero=reser.habitacion
+and hues.id_hues=huesped_id
+
+select hues.nombres,hues.apellidos,reser.huesped_id from huespedes hues, reservas reser
+where hues.id_hues=huesped_id
+and reser.habitacion=2
+
+select habi.habitacion_numero,count(reser.huesped_id)from habitaciones habi,reservas reser
+where habi.habitacion_numero=reser.habitacion
+group by habi.habitacion_numero
+
+--2
+select habi.habitacion_numero,habi.piso,hues.nombres,hues.apellidos from habitaciones habi, huespedes hues,reservas reser
+where habi.habitacion_numero=reser.habitacion
+and hues.id_hues=huesped_id
+and habi.piso=4
+
+select hues.nombres, hues.apellidos,reser habitacion from huespedes hues, reservas reser
+where hues.id_hues=huesped_id
+and reser.habitacion=3
+
+select habi.habitacion_numero,ROUND(AVG(reser.huesped_id),2) from habitaciones habi, reservas reser
+where habi.habitacion_numero=reser.habitacion
+group by habi.habitacion_numero
+--3
+select habi.habitacion_numero,hues.nombres,hues.apellidos from habitaciones habi, huespedes hues, reservas reser
+where habi.habitacion_numero=reser.habitacion
+and hues.id_hues=huesped_id
+
+select hues.nombres,hues.apellidos,reser.huesped_id from huespedes hues, reservas reser
+where reser.habitacion=4
+
+select habi.habitacion_numero, SUM(habi.precio_por_noche) from habitaciones habi,reservas reser
+where habi.habitacion_numero=reser.habitacion
+group by habi.habitacion_numero
+
+--RELACION MUNICIPIOS Y PROYECTOS
+--1
+select municipio.nombre,proyecto.proyecto from municipio,proyecto,proyecto_municipio pr_m
+where pr_m.proyecto_id=proyecto.id_proy
+and pr_m.municipio_id=municipio.id_muni
+
+select proyecto.proyecto,pr_m.proyecto_id from proyecto,proyecto_municipio pr_m
+where pr_m.municipio_id=1
+
+select municipio.nombre, count(pr_m.proyecto_id) from municipio, proyecto_municipio pr_m
+where pr_m.municipio_id=municipio.id_muni
+group by municipio.nombre
+--2
+select municipio.nombre,proyecto.proyecto from municipio,proyecto,proyecto_municipio pr_m
+where pr_m.proyecto_id=proyecto.id_proy
+and pr_m.municipio_id=municipio.id_muni
+and municipio.nombre like '%GAD%'
+
+select municipio.nombre,MIN(pr_m.municipio_id) from municipio, proyecto_municipio pr_m
+where pr_m.municipio_id=municipio.id_muni
+group by municipio.nombre
+--3
+select municipio.nombre,ciudad.nombre from municipio, ciudad
+where municipio.ciudad_id=ciudad.id_ciu
+
+select proyecto.proyecto,pr_m.proyecto_id from proyecto,proyecto_municipio pr_m
+where pr_m.municipio_id=3
+
+select municipio.nombre, MAX(proyecto_municipio.proyecto_id) from municipio,proyecto_municipio
+where proyecto_municipio.municipio_id=municipio.id_muni 
+group by municipio.nombre
